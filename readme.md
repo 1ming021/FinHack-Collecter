@@ -6,7 +6,7 @@
 3. 一些Python基础
 
 ### 使用方法
-1. git clone
+1. git clone https://github.com/FinHackCN/FinHack-Collecter.git
 2. pip(3) install -r requirements.txt
 3. 重命名config目录下I *.conf.example 为 *.conf
 4. 根据.conf文件中的提示信息修改配置文件
