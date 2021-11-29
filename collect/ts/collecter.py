@@ -21,8 +21,8 @@ class tsCollecter:
         
         
     def getAll(self):
-        self.getAStockBasic()
-        self.getAStockPrice()
+        # self.getAStockBasic()
+        # self.getAStockPrice()
         self.getAStockFinance()
         
 
@@ -56,16 +56,16 @@ class tsCollecter:
         # self.mTread(tsAStockPrice,'ccass_hold_detail')
         
     def getAStockFinance(self):
-        tsAStockFinance.disclosure_date(self.pro,self.db)
+        #tsAStockFinance.disclosure_date(self.pro,self.db)
         self.mTread(tsAStockFinance,'income')
-        self.mTread(tsAStockFinance,'balancesheet')
-        self.mTread(tsAStockFinance,'cashflow')
-        self.mTread(tsAStockFinance,'forecast')
-        self.mTread(tsAStockFinance,'express')
-        self.mTread(tsAStockFinance,'fina_indicator')
-        self.mTread(tsAStockFinance,'fina_audit')
-        self.mTread(tsAStockFinance,'fina_mainbz')
-        self.mTread(tsAStockFinance,'dividend')
+        # self.mTread(tsAStockFinance,'balancesheet')
+        # self.mTread(tsAStockFinance,'cashflow')
+        # self.mTread(tsAStockFinance,'forecast')
+        # self.mTread(tsAStockFinance,'express')
+        # self.mTread(tsAStockFinance,'fina_indicator')
+        # self.mTread(tsAStockFinance,'fina_audit')
+        # self.mTread(tsAStockFinance,'fina_mainbz')
+        # self.mTread(tsAStockFinance,'dividend')
 
     
     def mTread(self,className,functionName):

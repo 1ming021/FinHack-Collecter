@@ -21,9 +21,12 @@ class tsAStockFinance:
         disclosure_sql="select end_date from astock_finance_disclosure_date where ts_code='"+ts_code+"'  and not ISNULL(actual_date)"
         disclosure_df=mysql.selectToDf(disclosure_sql,db)
         table_list=[]
+        disclosure_list=[]
         if(not table_df.empty):
             table_list=table_df['end_date'].unique().tolist()
-        disclosure_list=disclosure_df['end_date'].unique().tolist()
+        if(not disclosure_df.empty):
+            disclosure_list=disclosure_df['end_date'].unique().tolist()
+        
         diff_list = set(disclosure_list)-set(table_list)
         diff_list=list(diff_list)
         diff_list.sort()
@@ -38,6 +41,7 @@ class tsAStockFinance:
         disclosure_sql="select * from astock_finance_disclosure_date where ts_code='"+ts_code+"' and end_date='"+end_date+"' and not ISNULL(actual_date)"
         disclosure_res=mysql.selectToDf(disclosure_sql,db)
         disclosure_count=len(disclosure_res)
+        #print(str(table_count)+","+str(disclosure_count)+","+ts_code+","+str(report_type))
         return table_count<disclosure_count
 
    
@@ -49,7 +53,7 @@ class tsAStockFinance:
         # print(len(stock_list))
         # exit()
         for ts_code in stock_list:
-            print(ts_code)
+            print(ts_code+","+api)
             diff_list=tsAStockFinance.getEndDateListDiff(table,ts_code,db)
             lastdate_sql="select max(end_date) as max from "+table+" where ts_code='"+ts_code+"'"
             if(report_type>1):
@@ -76,8 +80,8 @@ class tsAStockFinance:
             df=pd.DataFrame()
             engine=mysql.getDBEngine(db)
             for end_date in diff_list:
-                # if(lastdate>end_date):
-                #     continue
+                if(lastdate>end_date):
+                    continue
                 
                 f = getattr(pro, api)
                 while True:
@@ -94,9 +98,18 @@ class tsAStockFinance:
                             print(api+":触发限流，等待重试。\n"+str(e))
                             time.sleep(15)
                             continue
+                        elif "未知错误" in str(e):
+                            info = traceback.format_exc()
+                            print(ts_code)
+                            print(period)
+                            print(fileds)
+                            print(report_type)
+                            alert.send(api,'位置错误',str(info))
+                            print(info)
+                            break
                         else:
                             info = traceback.format_exc()
-                            alert.send(api,'函数异常',str(info))
+                            alert.send(api,'函数未知',str(info))
                             print(info)
                             break
      
