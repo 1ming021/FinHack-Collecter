@@ -15,8 +15,8 @@ class tsAStockFinance:
     
     def getEndDateListDiff(table,ts_code,db,report_type=0):
         table_sql="select end_date from "+table+" where ts_code='"+ts_code+"'"
-        if(report_type>1):
-            table_sql=table_sql+" and report_type="+report_type
+        if(report_type>0):
+            table_sql=table_sql+" and report_type="+str(report_type)
         table_df=mysql.selectToDf(table_sql,db)
         disclosure_sql="select end_date from astock_finance_disclosure_date where ts_code='"+ts_code+"'  and not ISNULL(actual_date)"
         disclosure_df=mysql.selectToDf(disclosure_sql,db)
@@ -36,8 +36,8 @@ class tsAStockFinance:
   
     def getLastDateCountDiff(table,end_date,ts_code,db,report_type=0):
         table_sql="select * from "+table+" where ts_code='"+ts_code+"' and end_date='"+end_date+"'"
-        if(report_type>1):
-            table_sql=table_sql+" and report_type="+report_type
+        if(report_type>0):
+            table_sql=table_sql+" and report_type="+str(report_type)
         table_res=mysql.selectToDf(table_sql,db)
         table_count=len(table_res)
         disclosure_sql="select * from astock_finance_disclosure_date where ts_code='"+ts_code+"' and end_date='"+end_date+"' and not ISNULL(actual_date)"
@@ -56,14 +56,15 @@ class tsAStockFinance:
         # exit()
   
         for ts_code in stock_list:
-            print(api+","+ts_code)
+            if datetime.datetime.now().second==0:
+                print(api+","+ts_code+","+str(report_type))
             diff_list=tsAStockFinance.getEndDateListDiff(table,ts_code,db)
             #print(diff_list)
             #exit()
             
             lastdate_sql="select max(end_date) as max from "+table+" where ts_code='"+ts_code+"'"
-            if(report_type>1):
-                lastdate_sql=table_sql+" and report_type="+report_type
+            if(report_type>0):
+                lastdate_sql=lastdate_sql+" and report_type="+str(report_type)
             lastdate=mysql.selectToDf(lastdate_sql,db)
             if(lastdate.empty):
                 lastdate='20000321'
@@ -74,8 +75,8 @@ class tsAStockFinance:
             diff_count=tsAStockFinance.getLastDateCountDiff(table,lastdate,ts_code,db)
             if(diff_count):
                 sql="delete from "+table+" where ts_code='"+ts_code+"' and end_date='"+lastdate+"'"
-                if(report_type>1):
-                    sql=table_sql+" and report_type="+report_type
+                if(report_type>0):
+                    sql=sql+" and report_type="+str(report_type)
                 mysql.delete(sql,db)
                 diff_list.insert(0,lastdate)
             
@@ -103,14 +104,14 @@ class tsAStockFinance:
                     # exit()
                     if report_type>0:
                         if len(end_list)>1:
-                            df=f(ts_code=ts_code,start_date=end_list[0:1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds,report_type=report_type)
+                            df=f(ts_code=ts_code,start_date=end_list[-1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds,report_type=report_type)
                         else:
-                            df=f(ts_code=ts_code,period=end_list[0:1],fileds=fileds,report_type=report_type)
+                            df=f(ts_code=ts_code,period=end_list[-1],fileds=fileds,report_type=report_type)
                     else:
                         if len(end_list)>1:
-                            df=f(ts_code=ts_code,start_date=end_list[0:1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds)
+                            df=f(ts_code=ts_code,start_date=end_list[-1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds)
                         else:
-                            df=f(ts_code=ts_code,period=end_list[0:1],fileds=fileds)
+                            df=f(ts_code=ts_code,period=end_list[-1],fileds=fileds)
                     df.to_sql(table, engine, index=False, if_exists='append', chunksize=5000)
                     break
                 except Exception as e:

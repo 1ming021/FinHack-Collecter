@@ -50,6 +50,17 @@ class mysql:
            print(sql+"MySQL Error:%s" % str(e))
         db.close()  
         
+        
+    def exec(sql,connection='default'):
+        db,cursor = mysql.getDB(connection)
+        print("Run Sql:"+sql)
+        try:
+            cursor.execute(sql)
+            db.commit()
+        except Exception as e:
+           print(sql+"MySQL Error:%s" % str(e))
+        db.close()          
+        
     def selectToDf(sql,connection='default'):
         db,cursor = mysql.getDB(connection)
         results=pd.DataFrame()

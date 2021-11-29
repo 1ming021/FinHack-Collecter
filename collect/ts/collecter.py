@@ -66,6 +66,12 @@ class tsCollecter:
         self.mTread(tsAStockFinance,'fina_audit')
         self.mTread(tsAStockFinance,'fina_mainbz')
         self.mTread(tsAStockFinance,'dividend')
+       
+    def getAStockMarket(self):
+        pass
+     
+    def getAStockIndex(self):
+        pass
 
     
     def mTread(self,className,functionName):

@@ -26,7 +26,33 @@ class tsSHelper:
         return data
         
     
-    
+    def getDataWithLastDate(pro,api,table,db,filed='trade_date'):
+        engine=mysql.getDBEngine(db)
+        lastdate=tsSHelper.getLastDateAndDelete(table=table,filed='trade_date',ts_code="",db=db)
+        begin = datetime.datetime.strptime(lastdate, "%Y%m%d")
+        end = datetime.datetime.now()
+        i=0
+        while i<(end - begin).days+1:
+            day = begin + datetime.timedelta(days=i)
+            day=day.strftime("%Y%m%d")
+            f = getattr(pro, api)
+            while True:
+                try:
+                    df=f(trade_date=day)
+                    break
+                except Exception as e:
+                    if "最多访问" in str(e):
+                        print(api+":触发限流，等待重试。\n"+str(e))
+                        time.sleep(15)
+                        continue
+                    else:
+                        info = traceback.format_exc()
+                        alert.send(api,'函数异常',str(info))
+                        print(info)
+                        break
+            #print(table+'-'+str(len(df))+'-'+day)
+            res = df.to_sql(table, engine, index=False, if_exists='append', chunksize=5000)
+            i=i+1        
         
     
     #查一下最后的数据是哪天
