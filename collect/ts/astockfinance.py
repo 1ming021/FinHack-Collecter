@@ -32,6 +32,8 @@ class tsAStockFinance:
         diff_list.sort()
         return diff_list
         
+        
+  
     def getLastDateCountDiff(table,end_date,ts_code,db,report_type=0):
         table_sql="select * from "+table+" where ts_code='"+ts_code+"' and end_date='"+end_date+"'"
         if(report_type>1):
@@ -52,9 +54,13 @@ class tsAStockFinance:
         #stock_list=['002624.SZ']
         # print(len(stock_list))
         # exit()
+  
         for ts_code in stock_list:
-            print(ts_code+","+api)
+            print(api+","+ts_code)
             diff_list=tsAStockFinance.getEndDateListDiff(table,ts_code,db)
+            #print(diff_list)
+            #exit()
+            
             lastdate_sql="select max(end_date) as max from "+table+" where ts_code='"+ts_code+"'"
             if(report_type>1):
                 lastdate_sql=table_sql+" and report_type="+report_type
@@ -73,45 +79,59 @@ class tsAStockFinance:
                 mysql.delete(sql,db)
                 diff_list.insert(0,lastdate)
             
-            # print(diff_list)
+            #print(diff_count)
             # print(lastdate)
             #exit()
             
             df=pd.DataFrame()
             engine=mysql.getDBEngine(db)
+            
+            end_list=[]
             for end_date in diff_list:
                 if(lastdate>end_date):
                     continue
+                end_list.append(end_date)
                 
-                f = getattr(pro, api)
-                while True:
-                    try:
-                        if report_type>0:
-                            df=f(ts_code=ts_code,period=end_date,fileds=fileds,report_type=report_type)
+            if end_list==[]:
+                continue
+            f = getattr(pro, api)
+            while True:
+                try:
+                    # print(lastdate)
+                    # print(end_date)
+                    # print(end_list)
+                    # exit()
+                    if report_type>0:
+                        if len(end_list)>1:
+                            df=f(ts_code=ts_code,start_date=end_list[0:1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds,report_type=report_type)
                         else:
-                            df=f(ts_code=ts_code,period=end_date,fileds=fileds)
-                
-                        df.to_sql(table, engine, index=False, if_exists='append', chunksize=5000)
+                            df=f(ts_code=ts_code,period=end_list[0:1],fileds=fileds,report_type=report_type)
+                    else:
+                        if len(end_list)>1:
+                            df=f(ts_code=ts_code,start_date=end_list[0:1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds)
+                        else:
+                            df=f(ts_code=ts_code,period=end_list[0:1],fileds=fileds)
+                    df.to_sql(table, engine, index=False, if_exists='append', chunksize=5000)
+                    break
+                except Exception as e:
+                    if "最多访问" in str(e):
+                        print(api+":触发限流，等待重试。\n"+str(e))
+                        time.sleep(15)
+                        continue
+                    elif "未知错误" in str(e):
+                        info = traceback.format_exc()
+                        print(ts_code)
+                        print(period)
+                        print(fileds)
+                        print(report_type)
+                        alert.send(api,'位置错误',str(info))
+                        print(info)
                         break
-                    except Exception as e:
-                        if "最多访问" in str(e):
-                            print(api+":触发限流，等待重试。\n"+str(e))
-                            time.sleep(15)
-                            continue
-                        elif "未知错误" in str(e):
-                            info = traceback.format_exc()
-                            print(ts_code)
-                            print(period)
-                            print(fileds)
-                            print(report_type)
-                            alert.send(api,'位置错误',str(info))
-                            print(info)
-                            break
-                        else:
-                            info = traceback.format_exc()
-                            alert.send(api,'函数未知',str(info))
-                            print(info)
-                            break
+                    else:
+                        info = traceback.format_exc()
+                        alert.send(api,'函数未知',str(info))
+                        print(info)
+                        break
      
     
     @tsMonitor
@@ -201,7 +221,7 @@ class tsAStockFinance:
                     break
                 except Exception as e:
                     if "最多访问" in str(e):
-                        print("disclosure_date:触发限流，等待重试。\n"+str(e))
+                        print("dividend:触发限流，等待重试。\n"+str(e))
                         time.sleep(15)
                         continue
                     else:

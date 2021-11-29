@@ -58,14 +58,14 @@ class tsCollecter:
     def getAStockFinance(self):
         #tsAStockFinance.disclosure_date(self.pro,self.db)
         self.mTread(tsAStockFinance,'income')
-        # self.mTread(tsAStockFinance,'balancesheet')
-        # self.mTread(tsAStockFinance,'cashflow')
-        # self.mTread(tsAStockFinance,'forecast')
-        # self.mTread(tsAStockFinance,'express')
-        # self.mTread(tsAStockFinance,'fina_indicator')
-        # self.mTread(tsAStockFinance,'fina_audit')
-        # self.mTread(tsAStockFinance,'fina_mainbz')
-        # self.mTread(tsAStockFinance,'dividend')
+        self.mTread(tsAStockFinance,'balancesheet')
+        self.mTread(tsAStockFinance,'cashflow')
+        self.mTread(tsAStockFinance,'forecast')
+        self.mTread(tsAStockFinance,'express')
+        self.mTread(tsAStockFinance,'fina_indicator')
+        self.mTread(tsAStockFinance,'fina_audit')
+        self.mTread(tsAStockFinance,'fina_mainbz')
+        self.mTread(tsAStockFinance,'dividend')
 
     
     def mTread(self,className,functionName):
