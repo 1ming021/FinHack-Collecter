@@ -104,12 +104,12 @@ class tsAStockFinance:
                     # exit()
                     if report_type>0:
                         if len(end_list)>1:
-                            df=f(ts_code=ts_code,start_date=end_list[-1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds,report_type=report_type)
+                            df=f(ts_code=ts_code,start_date=end_list[0],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds,report_type=report_type)
                         else:
                             df=f(ts_code=ts_code,period=end_list[-1],fileds=fileds,report_type=report_type)
                     else:
                         if len(end_list)>1:
-                            df=f(ts_code=ts_code,start_date=end_list[-1],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds)
+                            df=f(ts_code=ts_code,start_date=end_list[0],end_date=datetime.datetime.now().strftime('%Y%m%d'),fileds=fileds)
                         else:
                             df=f(ts_code=ts_code,period=end_list[-1],fileds=fileds)
                     df.to_sql(table, engine, index=False, if_exists='append', chunksize=5000)

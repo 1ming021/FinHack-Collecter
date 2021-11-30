@@ -21,8 +21,8 @@ class tsCollecter:
         
         
     def getAll(self):
-        # self.getAStockBasic()
-        # self.getAStockPrice()
+        self.getAStockBasic()
+        self.getAStockPrice()
         self.getAStockFinance()
         
 
@@ -56,7 +56,7 @@ class tsCollecter:
         # self.mTread(tsAStockPrice,'ccass_hold_detail')
         
     def getAStockFinance(self):
-        #tsAStockFinance.disclosure_date(self.pro,self.db)
+        tsAStockFinance.disclosure_date(self.pro,self.db)
         self.mTread(tsAStockFinance,'income')
         self.mTread(tsAStockFinance,'balancesheet')
         self.mTread(tsAStockFinance,'cashflow')

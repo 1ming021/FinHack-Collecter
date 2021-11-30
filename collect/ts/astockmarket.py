@@ -31,11 +31,11 @@ class tsAStockMarket:
     
     @tsMonitor
     def top_list(pro,db):
-        pass
+        tsSHelper.getDataWithLastDate(pro,'margin_detail','astock_market_margin_detail',db)
     
     @tsMonitor
     def top_inst(pro,db):
-        pass
+        tsSHelper.getDataWithLastDate(pro,'margin_detail','astock_market_margin_detail',db)
     
     @tsMonitor
     def pledge_stat(pro,db):
@@ -63,7 +63,7 @@ class tsAStockMarket:
     
     @tsMonitor
     def block_trade(pro,db):
-        pass
+        tsSHelper.getDataWithLastDate(pro,'margin_detail','astock_market_margin_detail',db)
     
     @tsMonitor
     def stk_holdernumber(pro,db):
