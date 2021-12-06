@@ -13,6 +13,26 @@ from library.alert import alert
 
 class tsAStockFinance:
     
+    def getPeriodList(db):
+        lastdate_sql="select max(end_date) as max from astock_finance_disclosure_date"
+        lastdate=mysql.selectToDf(lastdate_sql,db)
+        if(lastdate.empty):
+            lastdate='19980321'            
+        else:
+            lastdate=lastdate['max'].tolist()[0]
+        
+        
+        plist=[]
+        end_date_list=['0331','0630','0930','1231']
+        end_year=time.strftime("%Y", time.localtime())
+        for i in range(1999,int(end_year)+1):
+            for d in end_date_list:
+                p=end_year+str(d)
+                if p<lastdate:
+                    plist.append(p)
+        return plist
+
+    
     def getEndDateListDiff(table,ts_code,db,report_type=0):
         table_sql="select end_date from "+table+" where ts_code='"+ts_code+"'"
         if(report_type>0):
@@ -24,9 +44,16 @@ class tsAStockFinance:
         disclosure_list=[]
         if(not table_df.empty):
             table_list=table_df['end_date'].unique().tolist()
+       
         if(not disclosure_df.empty):
             disclosure_list=disclosure_df['end_date'].unique().tolist()
         
+        #若无计划披露数据，跑个全量
+        if(table_df.empty):
+            disclosure_df=tsAStockFinance.getPeriodList(db)
+        elif(disclosure_df.empty):
+            disclosure_df=tsAStockFinance.getPeriodList(db)
+            
         diff_list = set(disclosure_list)-set(table_list)
         diff_list=list(diff_list)
         diff_list.sort()
@@ -125,7 +152,7 @@ class tsAStockFinance:
                         print(period)
                         print(fileds)
                         print(report_type)
-                        alert.send(api,'位置错误',str(info))
+                        alert.send(api,'未知置错误',str(info))
                         print(info)
                         break
                     else:
@@ -245,3 +272,13 @@ class tsAStockFinance:
         fileds=""
         tsAStockFinance.getFinance(pro,'fina_mainbz','astock_finance_mainbz',fileds,db)
 
+    @tsMonitor
+    def top10_holders(pro,db):
+        fileds=""
+        tsAStockFinance.getFinance(pro,'top10_holders','astock_market_top10_holders',fileds,db)
+        
+
+    @tsMonitor
+    def top10_floatholders(pro,db):
+        fileds=""
+        tsAStockFinance.getFinance(pro,'top10_floatholders','astock_market_top10_floatholders',fileds,db)
