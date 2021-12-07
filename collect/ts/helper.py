@@ -81,14 +81,17 @@ class tsSHelper:
                 except Exception as e:
                     if "最多访问" in str(e):
                         print(api+":触发限流，等待重试。\n"+str(e))
-                        time.sleep(15)
+                        time.sleep(60)
                         continue
+                    elif "您没有访问该接口的权限" in str(e):
+                        break
                     else:
                         info = traceback.format_exc()
                         alert.send(api,'函数异常',str(info))
                         
                         print(api+"\n"+info)
                         break
+                    break
             #print(table+'-'+str(len(df))+'-'+day)
 
             i=i+1        
@@ -109,13 +112,16 @@ class tsSHelper:
                 except Exception as e:
                     if "最多访问" in str(e):
                         print(api+":触发限流，等待重试。\n"+str(e))
-                        time.sleep(15)
+                        time.sleep(60)
                         continue
+                    elif "您没有访问该接口的权限" in str(e):
+                        break
                     else:
                         info = traceback.format_exc()
                         alert.send(api,'函数异常',str(info))
                         print(info)
                         break
+                    break
         
     
     #查一下最后的数据是哪天

@@ -63,9 +63,7 @@ class tsCollecter:
         self.mTread(tsAStockPrice,'ggt_top10')
         self.mTread(tsAStockPrice,'hk_hold')
         self.mTread(tsAStockPrice,'ggt_daily')
-        
-
-        # self.mTread(tsAStockPrice,'ggt_monthly')
+        self.mTread(tsAStockPrice,'ggt_monthly')
         # self.mTread(tsAStockPrice,'ccass_hold_detail')
         
     def getAStockFinance(self):
@@ -94,7 +92,7 @@ class tsCollecter:
         self.mTread(tsAStockMarket,'share_float')
         self.mTread(tsAStockMarket,'block_trade')
         self.mTread(tsAStockMarket,'stk_holdernumber')
-        self.mTread(tsAStockMarket,'stk_holdertrade')
+        # self.mTread(tsAStockMarket,'stk_holdertrade')
         self.mTread(tsAStockFinance,'top10_holders')
         self.mTread(tsAStockFinance,'top10_floatholders')
         pass

@@ -82,11 +82,14 @@ class tsAStockBasic:
                         print(self.func.__name__+":触发限流，等待重试。\n"+str(e))
                         time.sleep(15)
                         continue
+                    elif "您没有访问该接口的权限" in str(e):
+                        break
                     else:
                         info = traceback.format_exc()
                         alert.send('stk_rewards','函数异常',str(info))
                         print(info)
                         break
+                    break
             
     
     @tsMonitor       
