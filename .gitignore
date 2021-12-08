@@ -3,3 +3,5 @@ cache/
 data/
 __pycache__/
 *.swp
+/config/
+.idea/
