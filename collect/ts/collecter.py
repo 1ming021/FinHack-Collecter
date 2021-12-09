@@ -1,6 +1,4 @@
 import sys
-sys.path.append("..")
-sys.path.append("../..")
 from library.config import config
 from library.mysql import mysql
 from collect.ts.astockbasic import tsAStockBasic

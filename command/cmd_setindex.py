@@ -1,5 +1,6 @@
 import sys
-sys.path.append("..")
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__))+"/../")
 from library.config import config
 from library.mysql import mysql
 

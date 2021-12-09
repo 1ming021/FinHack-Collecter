@@ -1,13 +1,11 @@
 import sys
-sys.path.append("..")
-sys.path.append("../..")
-
 from library.config import config
 from library.mysql import mysql
 from collect.ts.helper import tsSHelper
 from library.monitor import tsMonitor
 from library.alert import alert
 import traceback
+
 
 class tsAStockBasic:
     @tsMonitor
