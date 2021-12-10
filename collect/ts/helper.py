@@ -30,7 +30,12 @@ class tsSHelper:
             all_stock.append(data)
             data=pd.concat(all_stock,axis=0,ignore_index=True)
         return data
-        
+  
+  
+    def getAllFund(db='default'):
+        sql='select * from fund_basic'
+        data=mysql.selectToDf(sql,db)
+        return data      
         
     def getDataAndReplace(pro,api,table,db):
         mysql.truncateTable(table,db)
@@ -59,6 +64,10 @@ class tsSHelper:
                             df=f(ann_date=day)
                         elif(filed=='end_date'):
                             df=f(end_date=day)
+                        elif(filed=='date'):
+                            df=f(date=day)
+                        elif(filed=='nav_date'):
+                            df=f(nav_date=day)
                         else:
                             alert.send(api,'函数异常',filed+"未处理")
                     else:
@@ -67,7 +76,11 @@ class tsSHelper:
                         elif( filed=='ann_date'):
                             df=f(ann_date=day,ts_code=ts_code)
                         elif(filed=='end_date'):
-                            df=f(end_date=day,ts_code=ts_code)    
+                            df=f(end_date=day,ts_code=ts_code)  
+                        elif(filed=='date'):
+                            df=f(date=day,ts_code=ts_code)  
+                        elif(filed=='nav_date'):
+                            df=f(nav_date=day,ts_code=ts_code)
                         else:
                             alert.send(api,'函数异常',filed+"未处理")
                     

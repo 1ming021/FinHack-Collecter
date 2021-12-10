@@ -6,6 +6,10 @@ from collect.ts.astockprice import tsAStockPrice
 from collect.ts.astockfinance import tsAStockFinance
 from collect.ts.astockindex import tsAStockIndex
 from collect.ts.astockmarket import tsAStockMarket
+from collect.ts.fund import tsFund
+from collect.ts.other import tsOther
+from collect.ts.econo import tsEcono
+
 from library.thread import collectThread
 import tushare as ts
 
@@ -21,11 +25,15 @@ class tsCollecter:
         
         
     def getAll(self):
-        self.getAStockBasic()
-        self.getAStockPrice()
-        self.getAStockFinance()
-        self.getAStockMarket()
-        self.getAStockIndex()
+        # self.getAStockBasic()
+        # self.getAStockPrice()
+        # self.getAStockFinance()
+        # self.getAStockMarket()
+        # self.getAStockIndex()
+        self.getFund()
+        self.getEcono()
+        self.getOther()
+        
         
         for t in self.thread_list:
             t.setDaemon(True)
@@ -110,10 +118,46 @@ class tsCollecter:
         self.mTread(tsAStockIndex,'sz_daily_info')
         self.mTread(tsAStockIndex,'ths_daily')
         pass
+    
+    def getFund(self):
+        tsFund.fund_basic(self.pro,self.db)
+        self.mTread(tsFund,'fund_company')
+        self.mTread(tsFund,'fund_manager')
+        self.mTread(tsFund,'fund_share')
+        self.mTread(tsFund,'fund_nav')
+        self.mTread(tsFund,'fund_div')
+        self.mTread(tsFund,'fund_portfolio')
+        self.mTread(tsFund,'fund_daily')
+        self.mTread(tsFund,'fund_adj')
+        pass
 
+    def getEcono(self):
+        self.mTread(tsEcono,'shibor')
+        self.mTread(tsEcono,'shibor_quote')
+        self.mTread(tsEcono,'shibor_lpr')
+        self.mTread(tsEcono,'libor')
+        self.mTread(tsEcono,'hibor')
+        self.mTread(tsEcono,'wz_index')
+        self.mTread(tsEcono,'gz_index')
+        self.mTread(tsEcono,'cn_gdp')
+        self.mTread(tsEcono,'cn_cpi')
+        self.mTread(tsEcono,'cn_ppi')
+        self.mTread(tsEcono,'cn_m')
+        self.mTread(tsEcono,'us_tycr')
+        self.mTread(tsEcono,'us_trycr')
+        self.mTread(tsEcono,'us_tbr')
+        self.mTread(tsEcono,'us_tltr')
+        self.mTread(tsEcono,'us_trltr')
+        pass
+
+
+    def getOther(self):
+        self.mTread(tsOther,'cctv_news')
+        pass
     
     def mTread(self,className,functionName):
         thread = collectThread(className,functionName,self.pro,self.db)
+        print(functionName)
         self.thread_list.append(thread)
 
 
