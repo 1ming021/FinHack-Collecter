@@ -1,6 +1,4 @@
 import sys
-sys.path.append("..")
-sys.path.append("../..")
 import datetime
 from library.config import config
 from library.mysql import mysql

@@ -1,6 +1,4 @@
 import sys
-sys.path.append("..")
-sys.path.append("../..")
 import datetime
 from library.config import config
 from library.mysql import mysql
@@ -23,7 +21,30 @@ class tsAStockIndex:
         data=tsSHelper.getAllAStockIndex(pro,db)
         index_list=data['ts_code'].tolist()
         for ts_code in index_list:
-            tsSHelper.getDataWithLastDate(pro=pro,api='index_daily',table='astock_index_daily',db=db,ts_code=ts_code)
+            lastdate=tsSHelper.getLastDateAndDelete('astock_index_daily','trade_date',ts_code=ts_code,db=db)
+            engine=mysql.getDBEngine(db)   
+            today = datetime.datetime.now()
+            today=today.strftime("%Y%m%d")
+            while True:
+                try:
+                    df=pro.index_daily(ts_code=ts_code, start_date=lastdate, end_date=today)
+                    if(not df.empty):
+                        res = df.to_sql('astock_index_daily', engine, index=False, if_exists='append', chunksize=5000)
+                    break
+                except Exception as e:
+                    if "最多访问" in str(e):
+                        print('index_daily'+":触发限流，等待重试。\n"+str(e))
+                        time.sleep(15)
+                        continue
+                    else:
+                        info = traceback.format_exc()
+                        alert.send('index_daily','函数异常',str(info))
+                        
+                        print('index_daily'+"\n"+info)
+                        break                
+                
+                
+            #tsSHelper.getDataWithLastDate(pro=pro,api='index_daily',table='astock_index_daily',db=db,ts_code=ts_code)
     
     @tsMonitor
     def index_weekly(pro,db):

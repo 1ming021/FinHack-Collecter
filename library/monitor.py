@@ -8,6 +8,7 @@ class tsMonitor:
     def __get__(self, instance, owner):
         def wrapper(*args, **kwargs):
             res=False
+            print(self.func.__name__)
             while True:
                 try:
                     res=self.func(*args,**kwargs)
